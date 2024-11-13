@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recarga de Jogo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        header {
+            width: 100%;
+            max-width: 600px;
+            background-color: transparent;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+        .logo img {
+            width: 30px;
+            height: 30px;
+            margin-right: 8px;
+        }
+        .saldo {
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .input-group {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .input-group input:focus {
+            border-color: #007bff;
+        }
+        .open-options {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .info-section {
+            margin-top: 20px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .info-section .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .modal, .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content, .confirm-modal-content {
+            background-color: #fff;
+            padding: 20px;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .option {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .option img {
+            width: 25px;
+            height: 25px;
+        }
+        .confirm-button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .close-button {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #007bff;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="5.png" alt="Logo do Aplicativo">
+            <h1>Recarga Jogo</h1>
+        </div>
+        <div class="saldo">Saldo: R$ <span id="saldo">457,90</span></div>
+    </header>
+
+    <div class="container">
+        <p>Digite seu ID de jogo:</p>
+        <div class="input-group">
+            <input type="number" id="jogoId" placeholder="Insira seu ID de jogo">
+        </div>
+
+        <button class="open-options" onclick="abrirModal()">Escolher Dimas</button>
+
+        <!-- Modal de Seleção de Dimas -->
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <h3>Selecione a Quantidade de Dimas</h3>
+                <div class="option" onclick="selecionarDimas(500, 50)">
+                    <span>500 Dimas - R$ 50,00</span>
+                    <img src="6.png" alt="Diamantes">
+                </div>
+                <div class="option" onclick="selecionarDimas(200, 20)">
+                    <span>200 Dimas - R$ 20,00</span>
+                    <img src="6.png" alt="Diamantes">
+                </div>
+                <div class="option" onclick="selecionarDimas(100, 10)">
+                    <span>100 Dimas - R$ 10,00</span>
+                    <img src="6.png" alt="Diamantes">
+                </div>
+                <button class="close-button" onclick="fecharModal()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmação -->
+        <div class="confirm-modal" id="confirmModal">
+            <div class="confirm-modal-content">
+                <h3>Confirmação de Compra</h3>
+                <p>Deseja confirmar a compra de <span id="quantidadeDimas"></span> Dimas por R$ <span id="valorDimas"></span>?</p>
+                <button class="confirm-button" onclick="confirmarCompra()">Confirmar</button>
+                <button class="close-button" onclick="fecharConfirmModal()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Informações adicionais -->
+        <div class="info-section">
+            <p><span class="highlight">Segurança de Pagamentos:</span> Todos os pagamentos são criptografados e seguros.</p>
+            <p><span class="highlight">Privacidade:</span> Seus dados são protegidos e não serão compartilhados.</p>
+            <p><span class="highlight">Tempo de Recarga:</span> Entrega imediata dos Dimas no jogo.</p>
+            <p><span class="highlight">Site Oficial:</span> Para jogadores e influenciadores do Free Fire.</p>
+        </div>
+    </div>
+
+    <script>
+        let saldoAtual = 457.90;
+        let valorSelecionado = 0;
+        let quantidadeSelecionada = 0;
+
+        function abrirModal() {
+            document.getElementById("modal").style.display = "flex";
+        }
+
+        function fecharModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        function abrirConfirmModal() {
+            document.getElementById("confirmModal").style.display = "flex";
+        }
+
+        function fecharConfirmModal() {
+            document.getElementById("confirmModal").style.display = "none";
+        }
+
+        function selecionarDimas(quantidade, valor) {
+            quantidadeSelecionada = quantidade;
+            valorSelecionado = valor;
+            document.getElementById("quantidadeDimas").textContent = quantidade;
+            document.getElementById("valorDimas").textContent = valor.toFixed(2);
+            fecharModal();
+            abrirConfirmModal();
+        }
+
+        function confirmarCompra() {
+            const idJogo = document.getElementById("jogoId").value;
+
+            if (idJogo && valorSelecionado > 0) {
+                if (saldoAtual >= valorSelecionado) {
+                    saldoAtual -= valorSelecionado;
+                    document.getElementById("saldo").textContent = saldoAtual.toFixed(2);
+                    alert("Compra confirmada!");
+                } else {
+                    alert("Saldo insuficiente.");
+                }
+            } else {
+                alert("Preencha seu ID de jogo e selecione uma quantidade de Dimas.");
+            }
+            fecharConfirmModal();
+        }
+    </script>
+</body>
+</html>
